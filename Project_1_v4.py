@@ -47,12 +47,14 @@ password = input("password: ")
 
 text_lenght = len(TEXTS)
 
-if username not in registered_users or password != user_password[registered_users.index(username)]:
-    quit("Invalid username or password. Terminating the program...")
+if username in registered_users:
+    print(line)
+    print("Welcome to the app", username,".")
+    print("We have", text_lenght, "texts to analyze.")  
+else:
+    quit("unregistered user, terminating the program..")
 
-print(line)
-print(f"Welcome to the app, {username}. We have {text_lenght} texts to analyze.")
-
+print(f"Welcome to the app, {username}. We have {text_lenght} texts to analyzed.")
 
 print(line)
 
@@ -95,15 +97,21 @@ max_word_length = max(len(word) for word in clean_words)+1
 
 number_char_accurence = len(str(max_word_length))+1
 
-word_occurence = {}
-for number in range(1,max(occurence)+1): 
-    occurence = 0 
-    for word in clean_words:
-        if len(word) == number:
-            occurence += 1
+#word_occurence = {}
 
-    word_occurence[number] = occurence  
+#for number in range(1,max(occurence)+1): 
+#    occurence = 0 
+#    for word in clean_words:
+#        if len(word) == number:
+#            occurence += 1
 
+#    word_occurence[number] = occurence  
+
+#    print(f"{number:{number_char_accurence}}| {occurence*'*'} {' ' * (max_occurence_count-occurence)} |{occurence}")
+
+word_occurence = {number: sum(1 for word in clean_words if len(word) == number) for number in range(1, max(occurence) + 1)}
+
+for number, occurence in word_occurence.items():
     print(f"{number:{number_char_accurence}}| {occurence*'*'} {' ' * (max_occurence_count-occurence)} |{occurence}")
 
 

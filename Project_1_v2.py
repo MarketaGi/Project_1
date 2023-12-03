@@ -42,69 +42,110 @@ line = 50 * "-"
 registered_users = ['bob', 'ann', 'mike', 'liz']
 user_password = ['123','pass123', 'password123','pass123']
 
-username = input("username: ")
-password = input("password: ")
+#username = input("username: ")
+#password = input("password: ")
 
+#username and password for testing purposes
+username = 'bob'
+password = '123'
+
+#proměnná na délku textu
 text_lenght = len(TEXTS)
 
-if username not in registered_users or password != user_password[registered_users.index(username)]:
-    quit("Invalid username or password. Terminating the program...")
+if username in registered_users:
+    print(line)
+    print("Welcome to the app", username,".")
+    print("We have", text_lenght, "texts to analyze.")  
+else:
+    quit("unregistered user, terminating the program..")
 
-print(line)
-print(f"Welcome to the app, {username}. We have {text_lenght} texts to analyze.")
-
+print(f"Welcome to the app, {username}. We have {text_lenght} texts to analyzed.")
 
 print(line)
 
 text_number_chosen = input(f"Enter a number between 1 and {text_lenght} to select: ")
 
-# check if we have number and number between 1-3
+# Zkontrolovat, zda vstupní číslo je větší než 0, je číslo a 
 while not text_number_chosen.isdigit() or int(text_number_chosen) < 1 or int(text_number_chosen) > text_lenght:
     print(f"You entered an invalid input {text_number_chosen}. Please enter a valid number between 1 and", text_lenght)
     text_number_chosen = input(f"Enter a number between 1 and {text_lenght} to select: ")
 
-#index for chosen text
+#print(text_number_chosen)
 text_index = int(text_number_chosen) - 1
 
+#text_number_chosen = 1
+
 print(line)
+text_index = int(text_number_chosen) - 1   #toto je index, který potrebuju z textu
 
-clean_words = [word.strip(",.:;'").lower() for word in TEXTS[text_index].split()]
-title_word = sum(1 for word in clean_words if word.istitle())
-uppercase_words_count = sum(1 for word in clean_words if word.isupper() and not any(c.isdigit() for c in word))
-lowercase_words_count = sum(1 for word in clean_words if word.islower() and not any(c.isdigit() for c in word))
-numeric_strings = [int(word) for word in clean_words if word.isnumeric()]
-numeric_strings_count = len(numeric_strings)
+clean_words = []  #clean words
+title_word = 0    #titlecase words
+uppercase_words  = []  #uppercase words with no digits
+uppercase_words_count = 0  #uppercase words count
+lowercase_words  = []  #uppercase words with no digits
+lowercase_words_count = 0
+numeric_strings  = []  #uppercase words with no digits
+numeric_strings_count = 0
 
+for word in TEXTS[text_index].split():  #for first text find word and split it
+    clean_word = word.strip(",.:;'")
+    clean_words.append(clean_word.lower())
+    if word.istitle():
+        title_word += 1 # zkrácený zápis pro přičítání 1 do proměnné
+
+#TOTO NAPSAT PŘES LIST COMPREHENSION!!!!!!!
+    is_numeric = False
+    for character in word:
+        if character.isdigit():
+            is_numeric = True
+        #print(character, " ", is_numeric)
+    if not is_numeric and word.isupper() :
+        uppercase_words.append(word)
+        uppercase_words_count = uppercase_words_count + 1 
+    if not is_numeric and word.islower() :
+        lowercase_words.append(word)
+        lowercase_words_count = lowercase_words_count + 1 
+    if  word.isnumeric() :
+        numeric_strings.append(int(word))
+        numeric_strings_count = numeric_strings_count + 1 
 
 print("There are", len(clean_words), "words in the selected text.")
 print("There are", title_word, "titlecase words.")
 print("There are", uppercase_words_count, "uppercase words.")
 print("There are", lowercase_words_count, "lowercase words.")
 print("There are", numeric_strings_count, "numeric strings.")
+#sum_of_all_numbers = sum(numeric_strings)
 print("The sum of all the numbers", sum(numeric_strings),".")
 
 
+
+#occurence1 = []
+#for word in clean_words:
+#    occurence1.append(len(word))
+
 occurence = [len(word) for word in clean_words]
 
-#max occurence count for histogram widht
-max_occurence_count = max(occurence.count(length) for length in set(occurence))
+max_occurrence_count = max(occurence.count(length) for length in set(occurence))
+print(max_occurrence_count)
 
 print(line)
 
-max_word_length = max(len(word) for word in clean_words)+1  
+max_word_length = max(len(word) for word in clean_words)+1  #maximální délka slova je 13, ale pythonu potřebuji v indexu přičíst 1
 
 number_char_accurence = len(str(max_word_length))+1
 
+
 word_occurence = {}
-for number in range(1,max(occurence)+1): 
-    occurence = 0 
+
+for number in range(1,max(occurence)+1): #12 záznamů - max occurence je 11, potřebuji o 1 větší index
+    occurence = 0 #count to zero for each lenght
     for word in clean_words:
         if len(word) == number:
-            occurence += 1
+            occurence = occurence + 1
 
     word_occurence[number] = occurence  
 
-    print(f"{number:{number_char_accurence}}| {occurence*'*'} {' ' * (max_occurence_count-occurence)} |{occurence}")
+    print(f"{number:{number_char_accurence}}| {occurence*'*'} {' ' * (max_occurrence_count-occurence)} |{occurence}")
 
 
 
